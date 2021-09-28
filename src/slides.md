@@ -270,9 +270,61 @@ ES5-compliant. Needs for example Promises.
 
 ## Resolve
 
+<aside class="notes">
+Allows us to configure, how webpack resolve modules.
+</aside>
+
+
+```js
+module.exports = {
+  resolve: {
+    alias: {
+      "react": "preact-compat",
+      "react-dom": "preact-compat"
+      "components": path.resolve(__dirname, 'src/view/components'),
+    },
+  },
+};
+```
+
+
+```js
+import React form 'react'; // in fact we using preact!
+import { ExampleComponent } from 'components'; // instead of './src/view/components'
+```
+
 ---
 
 ## DevServer
+
+
+```
+npm i --D webpack-dev-server
+```
+
+```js
+module.exports = {
+  devServer: {
+    static: './dist',
+  },
+};
+```
+
+
+- `allowedHosts`
+- `client`
+- `overlay`
+- `http2`
+- `https`
+- `headers`
+- `host`
+- `port`
+- `static`
+- and much more...
+
+<aside class="notes">
+webpack-dev-server has many options to configure
+</aside>
 
 ---
 
@@ -294,3 +346,74 @@ ES5-compliant. Needs for example Promises.
 <aside class="notes">
 Suggestion <b>Externals</b> is good team name after Marvel Eternals release ;)
 </aside>
+
+---
+
+## Popular loaders
+
+
+- `babel-loader`
+- `ts-loader`
+- `css-loader`
+- `sass-loader`
+- `style-loader` - allow us to import styles
+- `angular2-template-loader`
+- `vue-loader`
+
+---
+
+## Popular plugins
+
+
+- `CopyWebpackPlugin` - allow us to copy files or directories
+- `EslintWebpackPlugin`
+- `HtmlWebpackPlugin`
+- `TerserPlugin` - minify JavaScript
+
+---
+
+## What about this presentation?
+
+
+```js
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+
+module.exports = {
+  entry: "./src/index.js",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(ttf|woff|eot)$/,
+        loader: "file-loader",
+        options: {
+          name: "[name].[ext]?[hash]",
+        },
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({ template: "src/index.html" }),
+    new CopyPlugin({
+      patterns: [{ from: "src/*.md", to: "[name][ext]" }],
+    }),
+  ],
+  devServer: {
+    static: "./dist",
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false,
+      },
+    },
+  },
+};
+```
